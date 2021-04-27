@@ -50,7 +50,7 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		json.NewEncoder(w).Encode(&models.ResponseMessage{
-			Message: "Error on create model",
+			Message: "Error on create book",
 		})
 		return
 	}
