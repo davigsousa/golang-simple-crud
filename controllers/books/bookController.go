@@ -62,7 +62,39 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateBook(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 
+	params := mux.Vars(r)
+	bookID := params["id"]
+
+	var updatedBook models.Book
+	err := json.NewDecoder(r.Body).Decode(&updatedBook)
+
+	if err != nil {
+		json.NewEncoder(w).Encode(&models.ResponseMessage{
+			Message: "Error on update book",
+		})
+		return
+	}
+	updatedBook.ID = bookID
+
+	bookIndex := -1
+	for index, current := range books {
+		if current.ID == bookID {
+			bookIndex = index
+			break
+		}
+	}
+
+	if bookIndex == -1 {
+		json.NewEncoder(w).Encode(&models.ResponseMessage{
+			Message: "Book does not exist",
+		})
+		return
+	}
+
+	books[bookIndex] = updatedBook
+	json.NewEncoder(w).Encode(books)
 }
 
 func DeleteBook(w http.ResponseWriter, r *http.Request) {
