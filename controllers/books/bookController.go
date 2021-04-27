@@ -46,7 +46,14 @@ func CreateBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var book models.Book
-	_ = json.NewDecoder(r.Body).Decode(&book)
+	err := json.NewDecoder(r.Body).Decode(&book)
+
+	if err != nil {
+		json.NewEncoder(w).Encode(&models.ResponseMessage{
+			Message: "Error on create model",
+		})
+		return
+	}
 
 	book.ID = strconv.Itoa(rand.Intn(10000000)) // Not safe
 	books = append(books, book)
